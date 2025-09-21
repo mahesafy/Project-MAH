@@ -1,22 +1,26 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors');
 
 const app = express();
-app.use(cors());
 app.use(express.json());
 
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+// Connect to MongoDB only once per cold start
+let isConnected = false;
+async function connectDB() {
+  if (isConnected) return;
+  await mongoose.connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+  isConnected = true;
+}
 
 const ItemSchema = new mongoose.Schema({ name: String });
-const Item = mongoose.model('Item', ItemSchema);
-
+const Item = mongoose.models.Item || mongoose.model('Item', ItemSchema);
 
 app.get('/api/items', async (req, res) => {
   try {
+    await connectDB();
     const items = await Item.find();
     res.json(items);
   } catch (err) {
@@ -24,9 +28,9 @@ app.get('/api/items', async (req, res) => {
   }
 });
 
-
 app.post('/api/items', async (req, res) => {
   try {
+    await connectDB();
     const newItem = new Item({ name: req.body.name });
     await newItem.save();
     res.json(newItem);
@@ -34,6 +38,5 @@ app.post('/api/items', async (req, res) => {
     res.status(500).json({ error: 'Failed to add item', details: err.message });
   }
 });
-
 
 module.exports = app;
