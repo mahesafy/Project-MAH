@@ -5,13 +5,13 @@ function App() {
   const [input, setInput] = useState('');
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/items')
+    fetch('/api/items')
       .then(res => res.json())
       .then(data => setItems(data));
   }, []);
 
   const addItem = async () => {
-    const res = await fetch('http://localhost:5000/api/items', {
+    const res = await fetch('/api/items', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: input }),
