@@ -6,7 +6,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect(process.env.MONGO_URI, {
+mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -25,4 +25,5 @@ app.post('/api/items', async (req, res) => {
   res.json(newItem);
 });
 
-app.listen(5000, () => console.log('Server running on http://localhost:5000'));
+
+module.exports = app;
