@@ -6,7 +6,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect("mongodb+srv://mahesaramadhan11_db_user:C8rhhSOspQ9cIm68@cluster0s.vzjupum.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0s", {
+mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
